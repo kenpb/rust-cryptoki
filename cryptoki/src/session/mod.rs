@@ -228,6 +228,15 @@ impl Session {
         object_management::get_attributes(self, object, attributes)
     }
 
+    /// Digest operation
+    pub fn digest(
+      &self,
+      mechanism: &Mechanism,
+      data: &[u8],
+  ) -> Result<Vec<u8>> {
+      digestion::digest(self, mechanism, data)
+  }
+
     /// Single-part encryption operation
     pub fn encrypt(
         &self,
@@ -475,5 +484,5 @@ impl SessionInfo {
         // The unwrap should not fail as `slotID` is a `CK_SLOT_ID ` which is the same type as
         // `slot_id` within the `Slot` structure
         self.val.slotID.try_into().unwrap()
-    }
+      }
 }
