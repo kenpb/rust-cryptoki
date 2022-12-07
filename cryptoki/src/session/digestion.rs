@@ -1,10 +1,9 @@
-// Copyright 2021 Contributors to the Parsec project.
+// Copyright 2022 Contributors to the Parsec project.
 // SPDX-License-Identifier: Apache-2.0
 //! Digest data
 
 use crate::error::{Result, Rv};
 use crate::mechanism::Mechanism;
-use crate::object::ObjectHandle;
 use crate::session::Session;
 use cryptoki_sys::*;
 use std::convert::TryInto;
@@ -20,16 +19,16 @@ pub(super) fn digest(
   let mut digested_data_len = 32;
 
   unsafe {
-    Rv::from(get_pkcs11!(self.client(), C_DigestInit)(
-      self.handle(),
+    Rv::from(get_pkcs11!(session.client(), C_DigestInit)(
+      session.handle(),
       &mut mechanism as CK_MECHANISM_PTR,
     ))
     .into_result()?;
   }
 
   unsafe {
-    Rv::from(get_pkcs11!(self.client(), C_DigestUpdate)(
-      self.handle(),
+    Rv::from(get_pkcs11!(session.client(), C_DigestUpdate)(
+      session.handle(),
       data.as_ptr() as *mut u8,
       data.len().try_into()?,
     ))
@@ -39,8 +38,8 @@ pub(super) fn digest(
   let mut digested_data = vec![0; 32];
 
   unsafe {
-    Rv::from(get_pkcs11!(self.client(), C_DigestFinal)(
-      self.handle(),
+    Rv::from(get_pkcs11!(session.client(), C_DigestFinal)(
+      session.handle(),
       digested_data.as_mut_ptr(),
       &mut digested_data_len,
     ))

@@ -19,6 +19,7 @@ use std::ops::Deref;
 
 mod decryption;
 mod encryption;
+mod digestion;
 mod flags;
 mod key_management;
 mod object_management;
